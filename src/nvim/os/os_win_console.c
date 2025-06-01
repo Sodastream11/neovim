@@ -29,6 +29,12 @@ int os_open_conin_fd(void)
   return conin_fd;
 }
 
+void os_handle_reset(void) 
+{
+    DLOG("resetting os handle");
+    hWnd = NULL;
+}
+
 void os_replace_stdin_to_conin(void)
 {
   close(STDIN_FILENO);
@@ -56,18 +62,25 @@ void os_replace_stdout_and_stderr_to_conout(void)
 /// Sets Windows console icon, or pass NULL to restore original icon.
 void os_icon_set(HICON hIconSmall, HICON hIcon)
 {
+  DLOG("in os_icon_set");
   if (hWnd == NULL) {
+    DLOG("returning out of os_icon_set");
     return;
   }
+
   hIconSmall = hIconSmall ? hIconSmall : hOrigIconSmall;
   hIcon = hIcon ? hIcon : hOrigIcon;
-
   if (hIconSmall != NULL) {
+    DLOG("sending hIconSmall message");
     SendMessage(hWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)hIconSmall);
+    fprintf(stderr, "seticon error: %d", GetLastError());
   }
+  DLOG("done with hIconSmall");
   if (hIcon != NULL) {
+    DLOG("sending hIcon message");
     SendMessage(hWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)hIcon);
   }
+  DLOG("done with hIcon");
 }
 
 /// Sets Nvim logo as Windows console icon.

@@ -697,6 +697,8 @@ void os_exit(int r)
 void getout(int exitval)
   FUNC_ATTR_NORETURN
 {
+  fprintf(stderr, "getting out\n");
+  DLOG("getting out");
   assert(!ui_client_channel_id);
   exiting = true;
 
@@ -814,10 +816,14 @@ void getout(int exitval)
 
 #ifdef MSWIN
   // Restore Windows console icon before exiting.
+  DLOG("resetting os icon and title ...");
   os_icon_set(NULL, NULL);
+  DLOG("icon reset");
   os_title_reset();
+  DLOG("resetting os icon and title done");
 #endif
-
+  fprintf(stderr, "os exiting\n");
+  DLOG("os exiting\n");
   os_exit(exitval);
 }
 
